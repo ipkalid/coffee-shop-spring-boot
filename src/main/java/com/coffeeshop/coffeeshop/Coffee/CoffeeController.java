@@ -1,9 +1,9 @@
 package com.coffeeshop.coffeeshop.Coffee;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,63 +18,49 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController()
 @RequestMapping("/coffee")
 public class CoffeeController {
-    List<Coffee> coffees;
 
-    CoffeeController() {
-        coffees = new ArrayList<Coffee>();
-        coffees.addAll(List.of(
-                new Coffee("Americano", 19.99), new Coffee("Cappuccino", 19.99),
-                new Coffee("Latte", 19.99)));
+    private final CoffeeService coffeeService;
+
+    @Autowired
+    public CoffeeController(CoffeeService coffeeService) {
+        this.coffeeService = coffeeService;
     }
 
     @GetMapping
     List<Coffee> getCoffees() {
-        return coffees;
+        return coffeeService.getAllCoffees();
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<Optional<Coffee>> getCoffeeById(@PathVariable String id) {
-        for (Coffee coffee : coffees) {
-            for (int i = 0; i < coffees.size(); i++) {
-                if (id.equals(coffees.get(i).id)) {
-                    return new ResponseEntity<>(Optional.of(coffee), HttpStatus.OK);
-                }
-            }
-
+    ResponseEntity<Optional<Coffee>> getCoffeeById(@PathVariable Long id) {
+        Optional<Coffee> c = coffeeService.getCoffeeById(id);
+        if (c.isPresent()) {
+            return new ResponseEntity<>(c, HttpStatus.FOUND);
         }
         return new ResponseEntity<>(Optional.empty(), HttpStatus.NOT_FOUND);
     }
 
     @PostMapping()
     public ResponseEntity<Coffee> postNewCoffee(@RequestBody Coffee c) {
-        coffees.add(c);
-        return new ResponseEntity<>(c, HttpStatus.CREATED);
+        Coffee newCoffee = coffeeService.addNewCoffees(c);
+        return new ResponseEntity<>(newCoffee, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     ResponseEntity<Optional<Coffee>> putCoffee(
-            @PathVariable String id,
+            @PathVariable Long id,
             @RequestBody Coffee c) {
 
-        for (int i = 0; i < coffees.size(); i++) {
-            if (id.equals(coffees.get(i).id)) {
-                coffees.get(i).updateCoffee(c);
-                return new ResponseEntity<>(Optional.of(coffees.get(i)), HttpStatus.OK);
-            }
-        }
+        Optional<Coffee> result = coffeeService.editCoffeeById(id, c);
 
-        return new ResponseEntity<>(Optional.empty(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Optional<String>> deleteCoffeeById(@PathVariable String id) {
-        for (int i = 0; i < coffees.size(); i++) {
-            if (id.equals(coffees.get(i).id)) {
-                coffees.remove(i);
-                return new ResponseEntity<>(Optional.of("Deleted"), HttpStatus.ACCEPTED);
-            }
+    ResponseEntity<Optional<String>> deleteCoffeeById(@PathVariable Long id) {
+        if (coffeeService.removeCoffee(id)) {
+            return new ResponseEntity<>(Optional.of("Deleted"), HttpStatus.OK);
         }
-
         return new ResponseEntity<>(Optional.of("Not Found"), HttpStatus.NOT_FOUND);
     }
 

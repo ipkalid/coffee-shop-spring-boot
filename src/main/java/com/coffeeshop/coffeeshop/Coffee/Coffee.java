@@ -1,14 +1,31 @@
 package com.coffeeshop.coffeeshop.Coffee;
 
-import java.util.UUID;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table
 public class Coffee {
-    final String id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    Long id;
     String name;
     double price;
 
+    public Coffee() {
+    }
+
     public Coffee(String name, double price) {
-        this.id = UUID.randomUUID().toString();
+        this.name = name;
+        this.price = price;
+    }
+
+    public Coffee(Long id, String name, double price) {
+        this.id = id;
         this.name = name;
         this.price = price;
     }
@@ -18,7 +35,7 @@ public class Coffee {
         this.price = c.price;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
