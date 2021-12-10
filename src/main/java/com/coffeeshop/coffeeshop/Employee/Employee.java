@@ -8,14 +8,19 @@ import javax.persistence.Table;
 
 @Entity
 @Table
+
 public class Employee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Employee_SEQ")
     Long id;
     String name;
 
     public Employee() {
+    }
+
+    public Employee(String name) {
+        this.name = name;
     }
 
     public Employee(Long id, String name) {

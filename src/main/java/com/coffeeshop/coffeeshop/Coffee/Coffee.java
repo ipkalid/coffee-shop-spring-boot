@@ -1,20 +1,28 @@
 package com.coffeeshop.coffeeshop.Coffee;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+import com.coffeeshop.coffeeshop.Order.Orders;
 
 @Entity
 @Table
 public class Coffee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Coffee_SEQ")
     Long id;
     String name;
     double price;
+
+    @ManyToMany(mappedBy = "coffee")
+    private List<Orders> orders;
 
     public Coffee() {
     }
