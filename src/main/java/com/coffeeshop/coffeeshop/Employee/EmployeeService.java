@@ -1,4 +1,4 @@
-package com.coffeeshop.coffeeshop.Employee;
+package com.coffeeshop.coffeeshop.employee;
 
 import java.util.List;
 import java.util.Optional;

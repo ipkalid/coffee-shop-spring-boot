@@ -1,4 +1,4 @@
-package com.coffeeshop.coffeeshop.Coffee;
+package com.coffeeshop.coffeeshop.coffee;
 
 import java.util.List;
 import java.util.Optional;

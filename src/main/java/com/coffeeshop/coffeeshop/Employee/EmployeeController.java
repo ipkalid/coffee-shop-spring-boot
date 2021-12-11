@@ -1,4 +1,4 @@
-package com.coffeeshop.coffeeshop.Employee;
+package com.coffeeshop.coffeeshop.employee;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,21 +19,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/employee")
 public class EmployeeController {
 
-    private final EmployeeService coffeeService;
+    private final EmployeeService employeeService;
 
     @Autowired
     public EmployeeController(EmployeeService coffeeService) {
-        this.coffeeService = coffeeService;
+        this.employeeService = coffeeService;
     }
 
     @GetMapping
     List<Employee> getEmployees() {
-        return coffeeService.getAllEmployees();
+        return employeeService.getAllEmployees();
     }
 
     @GetMapping("/{id}")
     ResponseEntity<Optional<Employee>> getEmployeeById(@PathVariable Long id) {
-        Optional<Employee> c = coffeeService.getEmployeeById(id);
+        Optional<Employee> c = employeeService.getEmployeeById(id);
         if (c.isPresent()) {
             return new ResponseEntity<>(c, HttpStatus.FOUND);
         }
@@ -42,7 +42,7 @@ public class EmployeeController {
 
     @PostMapping()
     public ResponseEntity<Employee> postNewEmployee(@RequestBody Employee e) {
-        Employee newEmployee = coffeeService.addNewEmployees(e);
+        Employee newEmployee = employeeService.addNewEmployees(e);
         return new ResponseEntity<>(newEmployee, HttpStatus.CREATED);
     }
 
@@ -51,14 +51,14 @@ public class EmployeeController {
             @PathVariable Long id,
             @RequestBody Employee c) {
 
-        Optional<Employee> result = coffeeService.editEmployeeById(id, c);
+        Optional<Employee> result = employeeService.editEmployeeById(id, c);
 
         return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")
     ResponseEntity<Optional<String>> deleteEmployeeById(@PathVariable Long id) {
-        if (coffeeService.removeEmployee(id)) {
+        if (employeeService.removeEmployee(id)) {
             return new ResponseEntity<>(Optional.of("Deleted"), HttpStatus.OK);
         }
         return new ResponseEntity<>(Optional.of("Not Found"), HttpStatus.NOT_FOUND);
